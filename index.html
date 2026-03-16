@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ລະບົບປ້ຳນ້ຳໂຄງງານໂຮງຮຽນ</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    background:#080b12;
+    font-family:'Segoe UI',Arial,sans-serif;
+    color:#e0e8f0;
+    min-height:100vh;
+  }
+
+  /* ── HEADER ── */
+  header{
+    background:linear-gradient(135deg,#0a1628,#0d2040);
+    border-bottom:1px solid #1a3050;
+    padding:20px 24px 16px;
+    text-align:center;
+  }
+  header h1{font-size:20px;color:#00d4aa;letter-spacing:1px;}
+  header p{color:#4a6a8a;font-size:12px;margin-top:4px;}
+
+  /* ── TABS ── */
+  .tabs{
+    display:flex;
+    background:#0c111a;
+    border-bottom:2px solid #1a2535;
+    padding:0 24px;
+    gap:4px;
+  }
+  .tab{
+    padding:12px 24px;
+    font-size:13px;
+    cursor:pointer;
+    border-bottom:3px solid transparent;
+    color:#4a6a8a;
+    transition:all .2s;
+    user-select:none;
+  }
+  .tab.active{color:#00d4aa;border-bottom-color:#00d4aa;}
+  .tab:hover:not(.active){color:#88aacc;}
+
+  /* ── PANELS ── */
+  .panel{display:none;padding:20px 24px;}
+  .panel.active{display:block;}
+
+  /* ── INFOBAR ── */
+  .infobar{
+    background:rgba(0,212,170,.07);
+    border:1px solid rgba(0,212,170,.18);
+    border-radius:10px;
+    padding:10px 16px;
+    min-height:44px;
+    margin-bottom:14px;
+    display:flex;align-items:center;gap:8px;
+    font-size:13px;
+  }
+  .ib-label{color:#00d4aa;font-weight:bold;white-space:nowrap;}
+  .ib-desc{color:#aaccbb;}
+  .ib-hint{color:#334455;font-size:12px;}
+
+  /* ── SVG ── */
+  svg{
+    width:100%;display:block;
+    background:#0c1520;
+    border-radius:14px;
+    border:1px solid #1a2535;
+  }
+  .comp{cursor:pointer;transition:filter .15s;}
+  .comp:hover{filter:brightness(1.7) drop-shadow(0 0 7px rgba(0,212,170,.5));}
+
+  /* ── GRID inside SVG ── */
+  /* ── CARDS ── */
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;}
+  @media(max-width:600px){.cards{grid-template-columns:1fr;}}
+  .card{
+    background:#0c111a;
+    border:1px solid #1a2535;
+    border-radius:12px;
+    padding:14px 16px;
+  }
+  .card h3{font-size:13px;margin-bottom:8px;}
+  .card ul{list-style:none;font-size:12px;color:#7a9ab0;line-height:1.9;}
+  .card ul li::before{content:"✓ ";color:#00d4aa;}
+
+  .steps-box{
+    margin-top:14px;
+    background:#0c111a;
+    border:1px solid #1a2535;
+    border-radius:12px;
+    padding:16px;
+  }
+  .steps-box h3{font-size:13px;color:#ffcc44;margin-bottom:10px;}
+  .step{display:flex;gap:10px;margin-bottom:8px;font-size:12px;color:#7a9ab0;line-height:1.6;}
+  .snum{
+    min-width:22px;height:22px;
+    background:#0f2010;border:1px solid #33aa55;
+    border-radius:50%;display:flex;align-items:center;justify-content:center;
+    color:#33ff77;font-size:10px;font-weight:bold;flex-shrink:0;margin-top:2px;
+  }
+
+  .parts-box{
+    margin-top:14px;
+    background:#0c111a;
+    border:1px solid #1a2535;
+    border-radius:12px;padding:16px;
+  }
+  .parts-box h3{font-size:13px;color:#00d4aa;margin-bottom:10px;}
+  .pg{display:grid;grid-template-columns:1fr 1fr;gap:5px 20px;font-size:12px;}
+  .pr{display:flex;justify-content:space-between;border-bottom:1px solid #131e2a;padding-bottom:4px;}
+  .pr span:first-child{color:#c0d8e0;}
+  .pr span:last-child{color:#3a6644;}
+
+  .badge{
+    display:inline-block;padding:2px 10px;border-radius:20px;
+    font-size:11px;font-weight:bold;margin-left:8px;vertical-align:middle;
+  }
+  .badge-green{background:#0a2a15;color:#33ff77;border:1px solid #33aa55;}
+  .badge-blue{background:#0a1528;color:#44aaff;border:1px solid #2266aa;}
+  .badge-orange{background:#2a1400;color:#ffaa33;border:1px solid #aa6600;}
+
+  .compare-table{
+    width:100%;border-collapse:collapse;font-size:12px;margin-top:14px;
+  }
+  .compare-table th{
+    background:#0d1a28;color:#00d4aa;padding:10px 12px;text-align:left;
+    border-bottom:2px solid #1a3050;
+  }
+  .compare-table td{
+    padding:9px 12px;border-bottom:1px solid #131e2a;color:#8aaabb;
+    vertical-align:top;
+  }
+  .compare-table tr:hover td{background:rgba(0,212,170,.03);}
+  .good{color:#33ff77;}
+  .warn{color:#ffcc44;}
+  .bad {color:#ff6655;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎓 ລະບົບປ້ຳນ້ຳອັດຕະໂນມັດ — ໂຄງງານໂຮງຮຽນ</h1>
+  <p>ອັດຕະໂນມັດຕາມເວລາ | ລະດັບສູງ / ສົມບູນ | ງົບ 200,000+ ກີບ</p>
+</header>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('arduino')">🤖 ແບບ Arduino <span class="badge badge-blue">ແນະນຳ</span></div>
+  <div class="tab" onclick="switchTab('ne555')">⚙️ ແບບ NE555</div>
+  <div class="tab" onclick="switchTab('compare')">📊 ປຽບທຽບ</div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PANEL 1: ARDUINO
+═══════════════════════════════════════ -->
+<div class="panel active" id="panel-arduino">
+
+  <div class="infobar" id="ib-arduino">
+    <span class="ib-hint">👆 ຊີ້ອຸປະກອນໃນແຜນຜັງເພື່ອເບິ່ງລາຍລະອຽດ</span>
+  </div>
+
+  <svg viewBox="0 0 820 500" id="svg-arduino">
+    <defs>
+      <pattern id="g1" width="28" height="28" patternUnits="userSpaceOnUse">
+        <path d="M28 0L0 0 0 28" fill="none" stroke="#0f1922" stroke-width=".8"/>
+      </pattern>
+    </defs>
+    <rect width="820" height="500" fill="url(#g1)"/>
+
+    <!-- ── WIRES ── -->
+    <!-- 5V rail -->
+    <line x1="60" y1="60" x2="760" y2="60" stroke="#ff4444" stroke-width="2" stroke-dasharray="6,3" opacity=".5"/>
+    <text x="20" y="64" fill="#ff4444" font-size="10">5V</text>
+    <!-- GND rail -->
+    <line x1="60" y1="440" x2="760" y2="440" stroke="#4a6a8a" stroke-width="2" stroke-dasharray="6,3" opacity=".5"/>
+    <text x="18" y="444" fill="#4a6a8a" font-size="10">GND</text>
+
+    <!-- Arduino → RTC SDA/SCL -->
+    <line x1="270" y1="200" x2="310" y2="200" stroke="#aa44ff" stroke-width="2"/>
+    <line x1="270" y1="215" x2="310" y2="215" stroke="#aa44ff" stroke-width="2"/>
+    <!-- Arduino → Relay signal -->
+    <line x1="270" y1="240" x2="380" y2="240" stroke="#ffcc00" stroke-width="2.5"/>
+    <line x1="380" y1="240" x2="380" y2="280" stroke="#ffcc00" stroke-width="2.5"/>
+    <!-- Relay → Motor -->
+    <line x1="490" y1="310" x2="580" y2="310" stroke="#44aaff" stroke-width="2.5"/>
+    <!-- Arduino → LCD I2C -->
+    <line x1="220" y1="170" x2="220" y2="100" stroke="#44ff88" stroke-width="2"/>
+    <line x1="220" y1="100" x2="520" y2="100" stroke="#44ff88" stroke-width="2"/>
+    <line x1="520" y1="100" x2="520" y2="140" stroke="#44ff88" stroke-width="2"/>
+    <!-- Arduino VCC/GND -->
+    <line x1="180" y1="170" x2="180" y2="60" stroke="#ff4444" stroke-width="2"/>
+    <line x1="200" y1="310" x2="200" y2="440" stroke="#4a6a8a" stroke-width="2"/>
+    <!-- Battery → Arduino -->
+    <line x1="90" y1="240" x2="90" y2="60" stroke="#ff4444" stroke-width="2.5"/>
+    <line x1="90" y1="340" x2="90" y2="440" stroke="#4a6a8a" stroke-width="2.5"/>
+    <!-- Relay VCC/GND -->
+    <line x1="420" y1="280" x2="420" y2="60" stroke="#ff4444" stroke-width="1.5" stroke-dasharray="4,2"/>
+    <line x1="450" y1="340" x2="450" y2="440" stroke="#4a6a8a" stroke-width="1.5" stroke-dasharray="4,2"/>
+    <!-- Motor GND -->
+    <line x1="650" y1="350" x2="650" y2="440" stroke="#4a6a8a" stroke-width="2"/>
+    <!-- Buzzer -->
+    <line x1="260" y1="370" x2="260" y2="390" stroke="#ff6688" stroke-width="2"/>
+    <line x1="260" y1="420" x2="260" y2="440" stroke="#4a6a8a" stroke-width="2"/>
+
+    <!-- junction dots -->
+    <circle cx="220" cy="100" r="4" fill="#44ff88"/>
+    <circle cx="180" cy="60" r="4" fill="#ff4444"/>
+    <circle cx="90" cy="60" r="4" fill="#ff4444"/>
+    <circle cx="90" cy="440" r="4" fill="#4a6a8a"/>
+    <circle cx="650" cy="440" r="4" fill="#4a6a8a"/>
+
+    <!-- wire labels -->
+    <text x="318" y="197" fill="#9966ff" font-size="9">SDA</text>
+    <text x="318" y="212" fill="#9966ff" font-size="9">SCL</text>
+    <text x="325" y="234" fill="#ccaa00" font-size="9">D7→Relay IN</text>
+
+    <!-- ── BATTERY 9V ── -->
+    <g class="comp" data-panel="arduino" data-id="bat9">
+      <rect x="55" y="240" width="70" height="100" rx="10" fill="#182808" stroke="#44aa22" stroke-width="2.5"/>
+      <rect x="73" y="230" width="16" height="12" rx="3" fill="#44ff44"/>
+      <rect x="73" y="340" width="16" height="12" rx="3" fill="#6688aa"/>
+      <text x="90" y="280" text-anchor="middle" fill="#66ff44" font-size="14" font-weight="bold">9V</text>
+      <text x="90" y="298" text-anchor="middle" fill="#44aa22" font-size="9">Battery</text>
+      <text x="76" y="240" fill="#44ff44" font-size="10">+</text>
+      <text x="76" y="352" fill="#6688aa" font-size="10">−</text>
+    </g>
+
+    <!-- ── ARDUINO UNO ── -->
+    <g class="comp" data-panel="arduino" data-id="uno">
+      <rect x="130" y="170" width="140" height="140" rx="10" fill="#0d1f2d" stroke="#0066cc" stroke-width="2.5"/>
+      <rect x="138" y="178" width="124" height="124" rx="6" fill="#082840"/>
+      <!-- chip -->
+      <rect x="165" y="210" width="70" height="50" rx="4" fill="#0a1e2e" stroke="#004499" stroke-width="1.5"/>
+      <text x="200" y="235" text-anchor="middle" fill="#0066ff" font-size="12" font-weight="bold">Arduino</text>
+      <text x="200" y="250" text-anchor="middle" fill="#004488" font-size="10">UNO R3</text>
+      <!-- pins left -->
+      <line x1="130" y1="200" x2="118" y2="200" stroke="#44aaff" stroke-width="1.5"/>
+      <line x1="130" y1="215" x2="118" y2="215" stroke="#44aaff" stroke-width="1.5"/>
+      <text x="115" y="199" text-anchor="end" fill="#2255aa" font-size="8">SDA</text>
+      <text x="115" y="214" text-anchor="end" fill="#2255aa" font-size="8">SCL</text>
+      <!-- pins right -->
+      <line x1="270" y1="200" x2="282" y2="200" stroke="#aa44ff" stroke-width="1.5"/>
+      <line x1="270" y1="215" x2="282" y2="215" stroke="#aa44ff" stroke-width="1.5"/>
+      <line x1="270" y1="240" x2="282" y2="240" stroke="#ffcc00" stroke-width="1.5"/>
+      <text x="284" y="199" fill="#7744cc" font-size="8">A4</text>
+      <text x="284" y="214" fill="#7744cc" font-size="8">A5</text>
+      <text x="284" y="239" fill="#aaaa00" font-size="8">D7</text>
+      <!-- USB port -->
+      <rect x="138" y="290" width="22" height="14" rx="3" fill="#111" stroke="#335577" stroke-width="1.5"/>
+      <text x="149" y="300" text-anchor="middle" fill="#223344" font-size="7">USB</text>
+    </g>
+
+    <!-- ── RTC DS3231 ── -->
+    <g class="comp" data-panel="arduino" data-id="rtc">
+      <rect x="310" y="178" width="90" height="70" rx="8" fill="#1a0e2a" stroke="#aa44ff" stroke-width="2"/>
+      <rect x="318" y="185" width="74" height="55" rx="4" fill="#110820"/>
+      <text x="355" y="207" text-anchor="middle" fill="#aa44ff" font-size="11" font-weight="bold">DS3231</text>
+      <text x="355" y="221" text-anchor="middle" fill="#663399" font-size="9">RTC Module</text>
+      <text x="355" y="235" text-anchor="middle" fill="#442266" font-size="8">ນາຟິກາ</text>
+      <!-- coin battery -->
+      <circle cx="370" cy="197" r="8" fill="#1a1a00" stroke="#888800" stroke-width="1.5"/>
+      <text x="370" y="200" text-anchor="middle" fill="#aaaa00" font-size="7">CR2</text>
+    </g>
+
+    <!-- ── LCD 16x2 I2C ── -->
+    <g class="comp" data-panel="arduino" data-id="lcd">
+      <rect x="460" y="140" width="160" height="70" rx="8" fill="#0a1a0a" stroke="#00cc44" stroke-width="2"/>
+      <rect x="468" y="148" width="144" height="55" rx="4" fill="#001a05"/>
+      <!-- pixels simulation -->
+      <rect x="472" y="152" width="136" height="22" rx="2" fill="#003300"/>
+      <text x="540" y="167" text-anchor="middle" fill="#00ff44" font-size="9" font-family="monospace">Water ON 08:00</text>
+      <rect x="472" y="177" width="136" height="22" rx="2" fill="#003300"/>
+      <text x="540" y="192" text-anchor="middle" fill="#00ff44" font-size="9" font-family="monospace">Next: 20:00</text>
+      <text x="540" y="222" text-anchor="middle" fill="#00cc44" font-size="10">LCD 16×2 I2C</text>
+    </g>
+
+    <!-- ── RELAY MODULE 5V ── -->
+    <g class="comp" data-panel="arduino" data-id="relay">
+      <rect x="360" y="280" width="130" height="60" rx="8" fill="#0a1a28" stroke="#0088ff" stroke-width="2.5"/>
+      <rect x="368" y="287" width="114" height="46" rx="4" fill="#060f1a"/>
+      <!-- coil symbol -->
+      <rect x="374" y="293" width="32" height="20" rx="3" fill="#0a1f35" stroke="#004477" stroke-width="1.5"/>
+      <text x="390" y="307" text-anchor="middle" fill="#2266aa" font-size="8">coil</text>
+      <!-- contact symbol -->
+      <line x1="420" y1="300" x2="430" y2="295" stroke="#44aaff" stroke-width="2"/>
+      <line x1="430" y1="295" x2="455" y2="295" stroke="#44aaff" stroke-width="2"/>
+      <line x1="420" y1="315" x2="455" y2="315" stroke="#44aaff" stroke-width="2"/>
+      <text x="425" y="330" text-anchor="middle" fill="#0088ff" font-size="10" font-weight="bold">RELAY 5V</text>
+    </g>
+
+    <!-- ── DC MOTOR ── -->
+    <g class="comp" data-panel="arduino" data-id="motor">
+      <circle cx="630" cy="320" r="50" fill="#1a1020" stroke="#ff6600" stroke-width="2.5"/>
+      <circle cx="630" cy="320" r="32" fill="#110c1a" stroke="#882200" stroke-width="2"/>
+      <text x="630" y="316" text-anchor="middle" fill="#ff6600" font-size="14" font-weight="bold">M</text>
+      <text x="630" y="330" text-anchor="middle" fill="#663300" font-size="9">DC 12V</text>
+      <!-- rotor lines -->
+      <line x1="630" y1="290" x2="630" y2="270" stroke="#441100" stroke-width="2"/>
+      <line x1="652" y1="298" x2="667" y2="285" stroke="#441100" stroke-width="2"/>
+      <line x1="660" y1="320" x2="680" y2="320" stroke="#441100" stroke-width="2"/>
+      <line x1="652" y1="342" x2="667" y2="355" stroke="#441100" stroke-width="2"/>
+      <line x1="630" y1="350" x2="630" y2="370" stroke="#441100" stroke-width="2"/>
+      <line x1="608" y1="342" x2="593" y2="355" stroke="#441100" stroke-width="2"/>
+      <!-- terminal labels -->
+      <rect x="614" y="268" width="16" height="10" rx="2" fill="#ff4444"/>
+      <text x="622" y="276" text-anchor="middle" fill="#fff" font-size="7" font-weight="bold">+</text>
+      <rect x="614" y="372" width="16" height="10" rx="2" fill="#4a6a8a"/>
+      <text x="622" y="380" text-anchor="middle" fill="#fff" font-size="7" font-weight="bold">−</text>
+    </g>
+
+    <!-- ── BUZZER ── -->
+    <g class="comp" data-panel="arduino" data-id="buzzer">
+      <ellipse cx="260" cy="400" rx="22" ry="12" fill="#2a0a0a" stroke="#ff4466" stroke-width="2"/>
+      <ellipse cx="260" cy="393" rx="22" ry="12" fill="#1a0808" stroke="#ff4466" stroke-width="2"/>
+      <text x="260" y="397" text-anchor="middle" fill="#ff4466" font-size="8">🔔</text>
+      <text x="260" y="416" text-anchor="middle" fill="#aa2244" font-size="8">Buzzer</text>
+    </g>
+
+    <!-- ── DIODE ── -->
+    <g class="comp" data-panel="arduino" data-id="diode">
+      <polygon points="490,300 510,300 500,315" fill="#cc3333" stroke="#ff6666" stroke-width="1.5"/>
+      <line x1="490" y1="315" x2="510" y2="315" stroke="#ff6666" stroke-width="2"/>
+      <text x="525" y="310" fill="#ff5555" font-size="9">1N4007</text>
+    </g>
+
+    <!-- ── TUBE label ── -->
+    <g class="comp" data-panel="arduino" data-id="tube">
+      <rect x="700" y="285" width="70" height="70" rx="8" fill="#0a180a" stroke="#22aa44" stroke-width="1.5"/>
+      <text x="735" y="315" text-anchor="middle" fill="#22aa44" font-size="18">💧</text>
+      <text x="735" y="340" text-anchor="middle" fill="#226633" font-size="9">ທໍ່ຢາງ</text>
+      <line x1="680" y1="310" x2="700" y2="310" stroke="#44aaff" stroke-width="2" stroke-dasharray="4,2"/>
+    </g>
+
+    <!-- ── TITLE ── -->
+    <text x="410" y="476" text-anchor="middle" fill="#1a3a55" font-size="11">Arduino UNO + DS3231 RTC Timer — ລະດັບ ⭐⭐⭐⭐⭐</text>
+  </svg>
+
+  <!-- cards -->
+  <div class="cards">
+    <div class="card">
+      <h3 style="color:#44aaff">🤖 ຈຸດເດັ່ນ Arduino</h3>
+      <ul>
+        <li>ຕັ້ງເວລາໄດ້ຫຼາຍຮອບ/ວັນ</li>
+        <li>LCD ສະແດງເວລາ ແລະ ສະຖານະ</li>
+        <li>Buzzer ສຽງສັນຍານ</li>
+        <li>ຂຽນໂຄ້ດໄດ້ອິດສະລະ</li>
+        <li>ເໝາະໂຄງງານໂຮງຮຽນ — ຄະແນນສູງ</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="color:#ffcc44">📝 ໂຄ້ດຫຍໍ້ (Arduino)</h3>
+      <pre style="font-size:10px;color:#558866;line-height:1.7;overflow:auto">#include &lt;RTClib.h&gt;
+RTC_DS3231 rtc;
+int relay = 7;
+
+void setup(){
+  pinMode(relay, OUTPUT);
+  rtc.begin();
+}
+
+void loop(){
+  DateTime now = rtc.now();
+  // ປ້ຳ 08:00 ແລະ 18:00
+  if((now.hour()==8||now.hour()==18)
+    && now.minute()==0){
+    digitalWrite(relay, HIGH); // ON
+    delay(60000); // 1 ນາທີ
+    digitalWrite(relay, LOW); // OFF
+  }
+}</pre>
+    </div>
+  </div>
+
+  <!-- steps -->
+  <div class="steps-box">
+    <h3>🔧 ຂັ້ນຕອນການຕໍ່</h3>
+    <div class="step"><div class="snum">1</div><span>Arduino VIN ← 9V Battery+, GND ← Battery−</span></div>
+    <div class="step"><div class="snum">2</div><span>DS3231 RTC: VCC←5V, GND←GND, SDA←A4, SCL←A5</span></div>
+    <div class="step"><div class="snum">3</div><span>LCD 16×2 I2C: VCC←5V, GND←GND, SDA←A4, SCL←A5</span></div>
+    <div class="step"><div class="snum">4</div><span>Relay: VCC←5V, GND←GND, IN←D7</span></div>
+    <div class="step"><div class="snum">5</div><span>Motor: ຕໍ່ຜ່ານ Relay COM/NO — ຕໍ່ diode 1N4007 ຂວາງ Motor</span></div>
+    <div class="step"><div class="snum">6</div><span>Buzzer: + ← D6, − ← GND (ສຽງສັນຍານກ່ອນປ້ຳ)</span></div>
+    <div class="step"><div class="snum">7</div><span>Upload โค้ด → ທົດສອບ → ປັບເວລາ</span></div>
+  </div>
+
+  <!-- parts -->
+  <div class="parts-box">
+    <h3>📦 ອຸປະກອນ Arduino System</h3>
+    <div class="pg">
+      <div class="pr"><span>Arduino UNO R3</span><span>~80,000 ກີບ</span></div>
+      <div class="pr"><span>DS3231 RTC Module</span><span>~30,000 ກີບ</span></div>
+      <div class="pr"><span>LCD 16×2 + I2C</span><span>~35,000 ກີບ</span></div>
+      <div class="pr"><span>Relay Module 5V</span><span>~15,000 ກີບ</span></div>
+      <div class="pr"><span>DC Motor 12V</span><span>~40,000 ກີບ</span></div>
+      <div class="pr"><span>Battery 9V + 12V</span><span>~25,000 ກີບ</span></div>
+      <div class="pr"><span>Buzzer + Diode</span><span>~5,000 ກີບ</span></div>
+      <div class="pr"><span>ສາຍ Jumper + PCB</span><span>~15,000 ກີບ</span></div>
+      <div class="pr"><span>ທໍ່ຢາງ + ຖານ</span><span>~10,000 ກີບ</span></div>
+      <div class="pr"><span style="color:#00d4aa;font-weight:bold">ລວມ</span><span style="color:#00d4aa;font-weight:bold">~255,000 ກີບ</span></div>
+    </div>
+  </div>
+
+</div><!-- end arduino panel -->
+
+<!-- ═══════════════════════════════════════
+     PANEL 2: NE555
+═══════════════════════════════════════ -->
+<div class="panel" id="panel-ne555">
+
+  <div class="infobar" id="ib-ne555">
+    <span class="ib-hint">👆 ຊີ້ອຸປະກອນໃນແຜນຜັງເພື່ອເບິ່ງລາຍລະອຽດ</span>
+  </div>
+
+  <svg viewBox="0 0 820 480" id="svg-ne555">
+    <defs>
+      <pattern id="g2" width="28" height="28" patternUnits="userSpaceOnUse">
+        <path d="M28 0L0 0 0 28" fill="none" stroke="#0f1922" stroke-width=".8"/>
+      </pattern>
+    </defs>
+    <rect width="820" height="480" fill="url(#g2)"/>
+
+    <!-- Rails -->
+    <line x1="60" y1="60" x2="760" y2="60" stroke="#ff4444" stroke-width="2" stroke-dasharray="6,3" opacity=".4"/>
+    <line x1="60" y1="430" x2="760" y2="430" stroke="#4a6a8a" stroke-width="2" stroke-dasharray="6,3" opacity=".4"/>
+    <text x="20" y="64" fill="#ff4444" font-size="10">VCC</text>
+    <text x="18" y="434" fill="#4a6a8a" font-size="10">GND</text>
+
+    <!-- Wires -->
+    <line x1="110" y1="240" x2="110" y2="60" stroke="#ff4444" stroke-width="2.5"/>
+    <line x1="110" y1="340" x2="110" y2="430" stroke="#4a6a8a" stroke-width="2.5"/>
+    <polyline points="330,60 330,140" stroke="#ff4444" stroke-width="2" stroke-dasharray="4,2" fill="none"/>
+    <polyline points="370,230 370,430" stroke="#4a6a8a" stroke-width="2" stroke-dasharray="4,2" fill="none"/>
+    <line x1="240" y1="185" x2="195" y2="185" stroke="#ffcc00" stroke-width="2.5"/>
+    <polyline points="195,185 195,260 220,260" stroke="#ffcc00" stroke-width="2.5" fill="none"/>
+    <polyline points="320,260 400,260 400,290" stroke="#44aaff" stroke-width="2.5" fill="none"/>
+    <polyline points="510,310 600,310" stroke="#44aaff" stroke-width="2.5" fill="none"/>
+    <line x1="670" y1="350" x2="670" y2="430" stroke="#4a6a8a" stroke-width="2"/>
+    <line x1="670" y1="270" x2="670" y2="60" stroke="#ff4444" stroke-width="2" stroke-dasharray="4,2"/>
+    <!-- timing RC -->
+    <line x1="350" y1="175" x2="420" y2="175" stroke="#aa44ff" stroke-width="2"/>
+    <line x1="420" y1="175" x2="420" y2="145" stroke="#aa44ff" stroke-width="2"/>
+    <line x1="420" y1="145" x2="330" y2="145" stroke="#aa44ff" stroke-width="2"/>
+    <line x1="350" y1="195" x2="460" y2="195" stroke="#aa44ff" stroke-width="2"/>
+    <line x1="460" y1="195" x2="460" y2="430" stroke="#aa44ff" stroke-width="1.5" stroke-dasharray="3,2"/>
+
+    <circle cx="110" cy="60" r="4" fill="#ff4444"/>
+    <circle cx="330" cy="60" r="4" fill="#ff4444"/>
+    <circle cx="670" cy="60" r="4" fill="#ff4444"/>
+    <circle cx="110" cy="430" r="4" fill="#4a6a8a"/>
+    <circle cx="670" cy="430" r="4" fill="#4a6a8a"/>
+
+    <!-- ── BATTERY 12V ── -->
+    <g class="comp" data-panel="ne555" data-id="bat12">
+      <rect x="70" y="240" width="80" height="100" rx="10" fill="#182808" stroke="#44aa22" stroke-width="2.5"/>
+      <rect x="88" y="228" width="18" height="14" rx="3" fill="#44ff44"/>
+      <rect x="88" y="338" width="18" height="14" rx="3" fill="#6688aa"/>
+      <text x="110" y="280" text-anchor="middle" fill="#66ff44" font-size="15" font-weight="bold">12V</text>
+      <text x="110" y="300" text-anchor="middle" fill="#44aa22" font-size="9">Battery</text>
+      <text x="92" y="241" fill="#44ff44" font-size="10">+</text>
+      <text x="92" y="352" fill="#6688aa" font-size="10">−</text>
+    </g>
+
+    <!-- ── NE555 ── -->
+    <g class="comp" data-panel="ne555" data-id="ne555ic">
+      <rect x="240" y="140" width="130" height="100" rx="10" fill="#0d1a10" stroke="#00cc55" stroke-width="2.5"/>
+      <rect x="248" y="148" width="114" height="84" rx="5" fill="#081410"/>
+      <text x="305" y="185" text-anchor="middle" fill="#00e060" font-size="15" font-weight="bold">NE555</text>
+      <text x="305" y="202" text-anchor="middle" fill="#338844" font-size="10">Timer IC</text>
+      <text x="305" y="218" text-anchor="middle" fill="#ffcc44" font-size="9">ກຳນົດ Interval</text>
+      <!-- pins -->
+      <line x1="240" y1="175" x2="228" y2="175" stroke="#ffcc00" stroke-width="2"/>
+      <text x="225" y="173" text-anchor="end" fill="#ccaa00" font-size="8">OUT(3)</text>
+      <line x1="370" y1="165" x2="382" y2="165" stroke="#ff4444" stroke-width="2"/>
+      <text x="384" y="163" fill="#ff4444" font-size="8">VCC(8)</text>
+      <line x1="370" y1="205" x2="382" y2="205" stroke="#4a6a8a" stroke-width="2"/>
+      <text x="384" y="203" fill="#4a6a8a" font-size="8">GND(1)</text>
+      <line x1="305" y1="140" x2="305" y2="128" stroke="#aa44ff" stroke-width="2"/>
+      <text x="290" y="124" fill="#9944ff" font-size="8">THR/DIS(6,7)</text>
+      <line x1="285" y1="240" x2="285" y2="252" stroke="#aa44ff" stroke-width="2"/>
+      <text x="272" y="265" fill="#9944ff" font-size="8">TRG(2)</text>
+    </g>
+
+    <!-- ── R1 (timing) ── -->
+    <g class="comp" data-panel="ne555" data-id="r1t">
+      <rect x="405" y="130" width="40" height="28" rx="5" fill="#7a4500" stroke="#cc8800" stroke-width="1.5"/>
+      <line x1="408" y1="144" x2="444" y2="144" stroke="rgba(0,0,0,.4)" stroke-width="3"/>
+      <line x1="413" y1="144" x2="418" y2="144" stroke="#ff4444" stroke-width="2.5"/>
+      <line x1="423" y1="144" x2="428" y2="144" stroke="#aaaa00" stroke-width="2.5"/>
+      <line x1="433" y1="144" x2="438" y2="144" stroke="#aa4400" stroke-width="2.5"/>
+      <text x="425" y="124" text-anchor="middle" fill="#ffaa44" font-size="9">R1</text>
+      <text x="425" y="172" text-anchor="middle" fill="#886633" font-size="8">100KΩ</text>
+    </g>
+
+    <!-- ── R2 (timing) ── -->
+    <g class="comp" data-panel="ne555" data-id="r2t">
+      <rect x="405" y="182" width="40" height="28" rx="5" fill="#7a4500" stroke="#cc8800" stroke-width="1.5"/>
+      <line x1="408" y1="196" x2="444" y2="196" stroke="rgba(0,0,0,.4)" stroke-width="3"/>
+      <line x1="413" y1="196" x2="418" y2="196" stroke="#ff8800" stroke-width="2.5"/>
+      <line x1="423" y1="196" x2="428" y2="196" stroke="#aaaa00" stroke-width="2.5"/>
+      <line x1="433" y1="196" x2="438" y2="196" stroke="#aa4400" stroke-width="2.5"/>
+      <text x="425" y="176" text-anchor="middle" fill="#ffaa44" font-size="9">R2</text>
+      <text x="425" y="224" text-anchor="middle" fill="#886633" font-size="8">ປັບໄດ້</text>
+    </g>
+
+    <!-- ── C1 (timing cap) ── -->
+    <g class="comp" data-panel="ne555" data-id="c1t">
+      <line x1="460" y1="250" x2="480" y2="250" stroke="#aaa" stroke-width="2.5"/>
+      <line x1="460" y1="260" x2="480" y2="260" stroke="#aaa" stroke-width="2.5"/>
+      <line x1="470" y1="230" x2="470" y2="250" stroke="#aa44ff" stroke-width="2"/>
+      <line x1="470" y1="260" x2="470" y2="280" stroke="#4a6a8a" stroke-width="2"/>
+      <line x1="470" y1="280" x2="470" y2="430" stroke="#4a6a8a" stroke-width="1.5" stroke-dasharray="3,2"/>
+      <text x="490" y="258" fill="#8866aa" font-size="9">C1</text>
+      <text x="490" y="270" fill="#664488" font-size="8">100μF</text>
+    </g>
+
+    <!-- ── MOSFET ── -->
+    <g class="comp" data-panel="ne555" data-id="mosfet555">
+      <rect x="220" y="255" width="100" height="70" rx="8" fill="#0a1a08" stroke="#33cc44" stroke-width="2"/>
+      <text x="270" y="285" text-anchor="middle" fill="#33cc44" font-size="10" font-weight="bold">IRF540N</text>
+      <text x="270" y="300" text-anchor="middle" fill="#228833" font-size="9">MOSFET</text>
+      <text x="270" y="313" text-anchor="middle" fill="#336633" font-size="8">N-Ch 100V</text>
+      <line x1="270" y1="255" x2="270" y2="242" stroke="#33cc44" stroke-width="2"/>
+      <line x1="270" y1="325" x2="270" y2="338" stroke="#33cc44" stroke-width="2"/>
+      <line x1="220" y1="275" x2="208" y2="275" stroke="#ffcc00" stroke-width="2"/>
+      <text x="205" y="273" text-anchor="end" fill="#aaaa00" font-size="8">G</text>
+    </g>
+
+    <!-- ── RELAY ── -->
+    <g class="comp" data-panel="ne555" data-id="relay555">
+      <rect x="400" y="290" width="110" height="55" rx="8" fill="#080f1a" stroke="#0077cc" stroke-width="2.5"/>
+      <rect x="408" y="297" width="94" height="41" rx="4" fill="#050c14"/>
+      <text x="455" y="315" text-anchor="middle" fill="#0099ff" font-size="11" font-weight="bold">RELAY</text>
+      <text x="455" y="332" text-anchor="middle" fill="#224466" font-size="9">12V / 10A</text>
+      <line x1="400" y1="310" x2="388" y2="310" stroke="#44aaff" stroke-width="2"/>
+      <line x1="510" y1="310" x2="522" y2="310" stroke="#44aaff" stroke-width="2"/>
+    </g>
+
+    <!-- ── DIODE ── -->
+    <g class="comp" data-panel="ne555" data-id="diode555">
+      <polygon points="520,295 540,295 530,310" fill="#cc3333" stroke="#ff5555" stroke-width="1.5"/>
+      <line x1="520" y1="310" x2="540" y2="310" stroke="#ff5555" stroke-width="2"/>
+      <text x="548" y="305" fill="#aa3333" font-size="8">1N4007</text>
+    </g>
+
+    <!-- ── MOTOR ── -->
+    <g class="comp" data-panel="ne555" data-id="motor555">
+      <circle cx="650" cy="310" r="55" fill="#150e1a" stroke="#ff6600" stroke-width="2.5"/>
+      <circle cx="650" cy="310" r="35" fill="#0f0a12" stroke="#882200" stroke-width="2"/>
+      <text x="650" y="306" text-anchor="middle" fill="#ff6600" font-size="15" font-weight="bold">M</text>
+      <text x="650" y="320" text-anchor="middle" fill="#663300" font-size="9">DC 12V</text>
+      <line x1="650" y1="278" x2="650" y2="256" stroke="#441100" stroke-width="2"/>
+      <line x1="676" y1="284" x2="694" y2="270" stroke="#441100" stroke-width="2"/>
+      <line x1="685" y1="310" x2="705" y2="310" stroke="#441100" stroke-width="2"/>
+      <line x1="676" y1="336" x2="694" y2="350" stroke="#441100" stroke-width="2"/>
+      <line x1="650" y1="342" x2="650" y2="364" stroke="#441100" stroke-width="2"/>
+      <line x1="624" y1="336" x2="606" y2="350" stroke="#441100" stroke-width="2"/>
+    </g>
+
+    <!-- Pot symbol (variable resistor for timing) -->
+    <g class="comp" data-panel="ne555" data-id="pot">
+      <rect x="158" y="248" width="50" height="20" rx="4" fill="#7a2000" stroke="#cc4400" stroke-width="1.5"/>
+      <text x="183" y="262" text-anchor="middle" fill="#ff8844" font-size="9">10KΩ VR</text>
+      <line x1="183" y1="268" x2="183" y2="280" stroke="#cc4400" stroke-width="1.5"/>
+      <line x1="183" y1="240" x2="183" y2="248" stroke="#ffcc00" stroke-width="2"/>
+      <line x1="158" y1="258" x2="148" y2="252" stroke="#ff6600" stroke-width="1.5"/>
+    </g>
+
+    <text x="410" y="462" text-anchor="middle" fill="#1a3a55" font-size="11">NE555 Astable Timer → MOSFET → Relay → Motor — ລະດັບ ⭐⭐⭐</text>
+  </svg>
+
+  <div class="cards">
+    <div class="card">
+      <h3 style="color:#00cc55">⚙️ ຈຸດເດັ່ນ NE555</h3>
+      <ul>
+        <li>ວົງຈອນງ່າຍ — ໃຊ້ IC ຕົວດຽວ</li>
+        <li>ລາຄາຖືກ ຫຼາຍກວ່າ Arduino</li>
+        <li>ຮຽນຮູ້ electronics ໂດຍກົງ</li>
+        <li>ປັບ R2/C1 ເພື່ອປ່ຽນໄລຍະເວລາ</li>
+        <li>ໄຟໟ້ານ້ອຍ — ເໝາະ Solar</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="color:#ffaa44">⏱️ ສູດຄຳນວນເວລາ</h3>
+      <div style="font-size:12px;color:#7a9ab0;line-height:2">
+        <div>🕐 <b style="color:#00d4aa">T_on</b> = 0.693 × (R1+R2) × C</div>
+        <div>🕑 <b style="color:#ff6644">T_off</b> = 0.693 × R2 × C</div>
+        <br>
+        <div style="color:#556677">ຕົວຢ່າງ: ປ້ຳ 1 ນາທີ ທຸກ 30 ນາທີ</div>
+        <div style="color:#445566">R1=100K, R2=2.2M, C=100μF</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="steps-box">
+    <h3>🔧 ຂັ້ນຕອນການຕໍ່</h3>
+    <div class="step"><div class="snum">1</div><span>Battery 12V+ → VCC rail, Battery− → GND rail</span></div>
+    <div class="step"><div class="snum">2</div><span>NE555 Pin8(VCC)←VCC, Pin1(GND)←GND</span></div>
+    <div class="step"><div class="snum">3</div><span>Pin6,7 ← R1(100KΩ) ← VCC; Pin2 ← R2(ປັບໄດ້) ← Pin6; C1(100μF) ← Pin2 → GND</span></div>
+    <div class="step"><div class="snum">4</div><span>Pin3(OUT) → 10KΩ VR → Gate IRF540N MOSFET</span></div>
+    <div class="step"><div class="snum">5</div><span>MOSFET Drain → Relay coil → VCC; Source → GND</span></div>
+    <div class="step"><div class="snum">6</div><span>Relay NO/COM → Motor 12V; Diode 1N4007 ຂວາງ Motor</span></div>
+  </div>
+
+  <div class="parts-box">
+    <h3>📦 ອຸປະກອນ NE555 System</h3>
+    <div class="pg">
+      <div class="pr"><span>NE555 Timer IC</span><span>~2,000 ກີບ</span></div>
+      <div class="pr"><span>IRF540N MOSFET</span><span>~8,000 ກີບ</span></div>
+      <div class="pr"><span>Relay 12V/10A</span><span>~12,000 ກີບ</span></div>
+      <div class="pr"><span>DC Motor 12V</span><span>~40,000 ກີບ</span></div>
+      <div class="pr"><span>Battery 12V</span><span>~60,000 ກີບ</span></div>
+      <div class="pr"><span>Resistor Pack</span><span>~5,000 ກີບ</span></div>
+      <div class="pr"><span>Capacitor Pack</span><span>~5,000 ກີບ</span></div>
+      <div class="pr"><span>PCB + ສາຍ</span><span>~15,000 ກີບ</span></div>
+      <div class="pr"><span>ທໍ່ + ຖານ</span><span>~10,000 ກີບ</span></div>
+      <div class="pr"><span style="color:#00d4aa;font-weight:bold">ລວມ</span><span style="color:#00d4aa;font-weight:bold">~157,000 ກີບ</span></div>
+    </div>
+  </div>
+
+</div><!-- end ne555 panel -->
+
+<!-- ═══════════════════════════════════════
+     PANEL 3: COMPARE
+═══════════════════════════════════════ -->
+<div class="panel" id="panel-compare">
+  <table class="compare-table">
+    <tr>
+      <th>ຫົວຂໍ້</th>
+      <th>🤖 Arduino UNO</th>
+      <th>⚙️ NE555</th>
+    </tr>
+    <tr><td>ງົບ</td><td class="warn">~255,000 ກີບ</td><td class="good">~157,000 ກີບ</td></tr>
+    <tr><td>ຄວາມຍາກ</td><td class="warn">ກາງ (ຂຽນໂຄ້ດ)</td><td class="good">ງ່າຍກວ່າ (ວົງຈອນ)</td></tr>
+    <tr><td>ຄວາມຖືກຕ້ອງເວລາ</td><td class="good">⭐⭐⭐⭐⭐ RTC ຊັດ</td><td class="warn">⭐⭐⭐ ຄ່າ drift</td></tr>
+    <tr><td>ສະແດງຜົນ</td><td class="good">LCD + Serial</td><td class="bad">ບໍ່ມີ</td></tr>
+    <tr><td>ການປ່ຽນເວລາ</td><td class="good">ງ່າຍ (ແກ້ໂຄ້ດ)</td><td class="warn">ຕ້ອງປ່ຽນ R/C</td></tr>
+    <tr><td>ຮຽນ Electronics</td><td class="warn">ໜ້ອຍກວ່າ</td><td class="good">ເຂົ້າໃຈ RC circuit</td></tr>
+    <tr><td>ຮຽນ Programming</td><td class="good">ໄດ້ C++ Arduino</td><td class="bad">ບໍ່ມີ</td></tr>
+    <tr><td>ຄະແນນໂຄງງານ</td><td class="good">⭐⭐⭐⭐⭐ ສູງ</td><td class="warn">⭐⭐⭐ ກາງ</td></tr>
+    <tr><td>ຕໍ່ຍອດໄດ້</td><td class="good">WiFi, Sensor, App</td><td class="warn">ຈຳກັດ</td></tr>
+    <tr><td>ຂະໜາດ</td><td class="warn">ໃຫຍ່ກວ່າ</td><td class="good">ນ້ອຍ compact</td></tr>
+  </table>
+
+  <div style="margin-top:18px;background:#0a1520;border:1px solid #1a3040;border-radius:12px;padding:18px;">
+    <h3 style="color:#00d4aa;font-size:14px;margin-bottom:12px;">🏆 ຄຳແນະນຳ</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;font-size:12px;">
+      <div style="background:#0d1e2d;border:1px solid #1a3a55;border-radius:10px;padding:14px;">
+        <div style="color:#44aaff;font-weight:bold;margin-bottom:8px;">🤖 ເລືອກ Arduino ຖ້າ...</div>
+        <div style="color:#6a9ab0;line-height:1.8">
+          ✓ ຕ້ອງການຄະແນນສູງ<br>
+          ✓ ສະແດງການທຳງານ LCD<br>
+          ✓ ຢາກຮຽນ programming<br>
+          ✓ ຕ້ອງການຕໍ່ຍອດ WiFi
+        </div>
+      </div>
+      <div style="background:#0d1e18;border:1px solid #1a3a28;border-radius:10px;padding:14px;">
+        <div style="color:#33cc55;font-weight:bold;margin-bottom:8px;">⚙️ ເລືອກ NE555 ຖ້າ...</div>
+        <div style="color:#5a8a6a;line-height:1.8">
+          ✓ ຮຽນ electronics ແທ້ໆ<br>
+          ✓ ງົບປະຢັດກວ່າ<br>
+          ✓ ໂຄງງານ physics/circuit<br>
+          ✓ ຕ້ອງການ compact
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:14px;background:#1a0e0a;border:1px solid #3a2010;border-radius:8px;padding:12px;font-size:12px;color:#aa7744;">
+      💡 <b style="color:#ffaa44">ຄຳແນະນຳສຸດທ້າຍ:</b> ສຳລັບໂຄງງານໂຮງຮຽນລະດັບສູງ — <b style="color:#ffcc00">Arduino + DS3231 RTC</b> ໃຫ້ຄະແນນດີທີ່ສຸດ ເພາະສາມາດສະແດງ LCD, ຂຽນ report programming ໄດ້ ແລະ ຕໍ່ຍອດໄດ້ຫຼາຍ
+    </div>
+  </div>
+</div>
+
+<script>
+// ── TAB SWITCHING ──
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    t.classList.toggle('active', ['arduino','ne555','compare'][i]===name);
+  });
+  document.querySelectorAll('.panel').forEach(p=>{
+    p.classList.toggle('active', p.id==='panel-'+name);
+  });
+}
+
+// ── TOOLTIPS ──
+const tips = {
+  // Arduino
+  bat9:   {l:'Battery 9V',      d:'ສ້ອນໄຟ Arduino VIN — ໃຊ້ 9V alkaline ຫຼື Li-ion'},
+  uno:    {l:'Arduino UNO R3',  d:'ໄຂສະໝອງຂອງລະບົບ — ຮັນໂຄ້ດ, ຈັດການ timer, ຄວບຄຸມ relay'},
+  rtc:    {l:'DS3231 RTC',      d:'ໂມດູລນາຟິກາ — ຮັກສາເວລາຖືກຕ້ອງ, ໃຊ້ I2C (SDA/SCL)'},
+  lcd:    {l:'LCD 16×2 I2C',   d:'ສະແດງເວລາ ແລະ ສະຖານະ ON/OFF — ຕໍ່ I2C ງ່າຍດາຍ'},
+  relay:  {l:'Relay Module 5V', d:'ຕັດ-ຕໍ່ 12V ໃຫ້ Motor ເມື່ອ Arduino ສົ່ງ HIGH ທາງ D7'},
+  motor:  {l:'DC Motor 12V',    d:'ສູບນ້ຳ — ຮັບໄຟ 12V ຜ່ານ Relay. ຕ້ອງຕໍ່ diode ປ້ອງກັນ'},
+  buzzer: {l:'Buzzer',          d:'ສຽງສັນຍານ 3 ວິ ກ່ອນປ້ຳ — ຕໍ່ D6 Arduino'},
+  diode:  {l:'1N4007 Diode',   d:'ປ້ອງກັນ Back-EMF ຈາກ Motor — ຕ້ອງຕໍ່ທຸກຄັ້ງ'},
+  tube:   {l:'ທໍ່ຢາງ',          d:'ຕໍ່ ຄ້ວດ motor → ພາຊະນະນ້ຳ. ຕິດກາວຮ້ອນໃຫ້ແໜ້ນ'},
+  // NE555
+  bat12:  {l:'Battery 12V',     d:'ສ້ອນໄຟ VCC ທັງໝົດ — ໃຊ້ 12V lead-acid ຫຼື Li-ion pack'},
+  ne555ic:{l:'NE555 Timer IC',  d:'Astable mode: ສ້າງ pulse ON/OFF ຕາມ R1,R2,C1 ທີ່ຕັ້ງ'},
+  r1t:    {l:'R1 = 100KΩ',      d:'Timing resistor ຕຳແໜ່ງ 1 — ກຳນົດ duty cycle'},
+  r2t:    {l:'R2 = ປັບໄດ້',     d:'ປ່ຽນຄ່า R2 ເພື່ອ ປ່ຽນໄລຍະ OFF time — ໃຊ້ potentiometer'},
+  c1t:    {l:'C1 = 100μF',      d:'Timing capacitor — ໃຫຍ່ຂຶ້ນ = ໄລຍະເວລານານຂຶ້ນ'},
+  mosfet555:{l:'IRF540N MOSFET',d:'N-Channel 100V — ຂະຫຍາຍສັນຍານຈາກ 555 ໃຫ້ Relay'},
+  relay555: {l:'Relay 12V/10A', d:'ຕັດ-ຕໍ່ 12V ໃຫ້ Motor ເມື່ອ MOSFET ເປີດ'},
+  diode555: {l:'1N4007',        d:'ປ້ອງກັນ Back-EMF ຈາກ Relay coil ແລະ Motor'},
+  motor555: {l:'DC Motor 12V',  d:'ສູບນ້ຳ — ເປີດ/ປິດຕາມ Relay'},
+  pot:    {l:'10KΩ Potentiometer',d:'ຄວບຄຸມ Gate voltage MOSFET — ປ້ອງກັນ IC 555 overload'},
+};
+
+['arduino','ne555'].forEach(panel=>{
+  const ib = document.getElementById('ib-'+panel);
+  document.querySelectorAll(`[data-panel="${panel}"]`).forEach(el=>{
+    el.addEventListener('mouseenter',()=>{
+      const t = tips[el.dataset.id];
+      if(t) ib.innerHTML=`<span class="ib-label">${t.l}:</span><span class="ib-desc">${t.d}</span>`;
+    });
+    el.addEventListener('mouseleave',()=>{
+      ib.innerHTML='<span class="ib-hint">👆 ຊີ້ອຸປະກອນໃນແຜນຜັງເພື່ອເບິ່ງລາຍລະອຽດ</span>';
+    });
+  });
+});
+</script>
+</body>
+</html>
